@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         data-theme="dracula"
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-screen max-w-screen  font-(family-name:--font-geist-mono)`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col w-screen min-h-screen max-w-screen font-(family-name:--font-geist-mono)`}
       >
         <NavBar />
         {children}
