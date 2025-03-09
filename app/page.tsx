@@ -1,101 +1,107 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+type Todo = {
+  id: string;
+  description: string;
+  done: boolean;
+};
+
+const DEFAULT_TODO: Todo = { id: "", description: "", done: false };
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [task, setTask] = useState<Todo>(DEFAULT_TODO);
+  const [tasks, setTasks] = useState<Todo[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="w-[80%] h-full  mx-auto self-center p-4">
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Add a todo"
+          className="input w-full"
+          value={task.description}
+          onChange={e => setTask({ id: uuidv4(), description: e.target.value, done: false })}
+        />
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            if (!!task.description) {
+              setTasks(prev => [...prev, task]);
+              setTask(DEFAULT_TODO);
+            }
+          }}
+        >
+          Add
+        </button>
+      </div>
+      {!!tasks.length && (
+        <div>
+          <div className="divider">Todos</div>
+          <ul>
+            {tasks.map(({ id, description, done }) => (
+              <div key={id} className="group transition">
+                <div className="flex gap-2 items-center">
+                  <button
+                    className="btn btn-circle btn-sm w-0 group-hover:w-8 opacity-0 duration-300 group-hover:opacity-100 transition-all"
+                    onClick={() => {
+                      const newTasks = tasks.filter(taskItem => taskItem.id !== id);
+
+                      setTasks(newTasks);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="20"
+                      height="20"
+                      viewBox="0,0,256,256"
+                    >
+                      <g
+                        className="fill-error"
+                        fillRule="nonzero"
+                        stroke="none"
+                        strokeWidth="1"
+                        strokeLinecap="butt"
+                        strokeLinejoin="miter"
+                        strokeMiterlimit="10"
+                        strokeDasharray=""
+                        strokeDashoffset="0"
+                        fontFamily="none"
+                        fontWeight="none"
+                        fontSize="none"
+                        textAnchor="none"
+                      >
+                        <g transform="scale(8.53333,8.53333)">
+                          <path d="M13,3c-0.26757,-0.00363 -0.52543,0.10012 -0.71593,0.28805c-0.1905,0.18793 -0.29774,0.44436 -0.29774,0.71195h-5.98633c-0.36064,-0.0051 -0.69608,0.18438 -0.87789,0.49587c-0.18181,0.3115 -0.18181,0.69676 0,1.00825c0.18181,0.3115 0.51725,0.50097 0.87789,0.49587h18c0.36064,0.0051 0.69608,-0.18438 0.87789,-0.49587c0.18181,-0.3115 0.18181,-0.69676 0,-1.00825c-0.18181,-0.3115 -0.51725,-0.50097 -0.87789,-0.49587h-5.98633c0,-0.26759 -0.10724,-0.52403 -0.29774,-0.71195c-0.1905,-0.18793 -0.44836,-0.29168 -0.71593,-0.28805zM6,8v16c0,1.105 0.895,2 2,2h14c1.105,0 2,-0.895 2,-2v-16z"></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </button>
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-success"
+                    onClick={() => {
+                      const newTasks = tasks.map(taskItem =>
+                        taskItem.id === id ? { ...taskItem, done: !taskItem.done } : taskItem
+                      );
+
+                      setTasks(newTasks);
+                    }}
+                  />
+                  <li>
+                    <p className={`break-all ${done && "line-through"}`}>{description}</p>
+                  </li>
+                </div>
+                <div className="divider my-2" />
+              </div>
+            ))}
+          </ul>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
   );
 }
