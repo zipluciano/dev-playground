@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { updatePassword } from "@/app/auth/actions";
 import { useSearchParams } from "next/navigation";
 
-export default function UpdatePassword() {
+function UpdatePasswordForm() {
   const searchParams = useSearchParams();
 
   return (
@@ -22,5 +23,13 @@ export default function UpdatePassword() {
         </fieldset>
       </form>
     </main>
+  );
+}
+
+export default function UpdatePassword() {
+  return (
+    <Suspense fallback="Loading...">
+      <UpdatePasswordForm />
+    </Suspense>
   );
 }
