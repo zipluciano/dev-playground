@@ -1,12 +1,11 @@
-import { login } from "@/app/auth/actions";
-import Link from "next/link";
+import { signup } from "@/app/auth/actions";
 
-export default function Login() {
+export default function SignUp() {
   return (
     <main className="grow flex justify-center items-center">
       <form>
         <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box shadow-xl">
-          <legend className="fieldset-legend">Login</legend>
+          <legend className="fieldset-legend">Sign Up</legend>
           <label htmlFor="email" className="fieldset-label">
             Email
           </label>
@@ -15,15 +14,9 @@ export default function Login() {
             Password
           </label>
           <input type="password" name="password" className="input" placeholder="Password" />
-          <Link href="/reset-password" className="link">
-            Forgot my password
-          </Link>
-          <button formAction={login} className="btn btn-primary mt-4">
-            Login
+          <button formAction={signup} className="btn btn-primary mt-4">
+            Sign Up
           </button>
-          <Link href="/signup" className="link">
-            Create an account
-          </Link>
         </fieldset>
       </form>
     </main>
