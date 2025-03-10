@@ -1,8 +1,13 @@
 "use client";
 
 import { logout } from "@/app/auth/actions";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
+  const pathname = usePathname();
+
+  const isNotLoginOrSignUpPage = !["/login", "/signup", "/reset-password", "/update-password"].includes(pathname);
+
   return (
     <nav className="navbar shadow-xl">
       <div className="navbar-start gap-2 items-center">
@@ -24,11 +29,13 @@ export default function NavBar() {
         </svg>
         <p className="uppercase">Dev Playground</p>
       </div>
-      <div className="navbar-end">
-        <button className="btn" onClick={logout}>
-          Logout
-        </button>
-      </div>
+      {isNotLoginOrSignUpPage && (
+        <div className="navbar-end">
+          <button className="btn" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      )}
     </nav>
   );
 }

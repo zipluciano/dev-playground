@@ -57,3 +57,30 @@ export async function logout() {
   revalidatePath("/login", "layout");
   redirect("/login");
 }
+
+export async function resetPassword(formData: FormData) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(formData.get("email") as string);
+
+  if (error) {
+    redirect("/error");
+  }
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient();
+
+  const { error: exchangeCodeError } = await supabase.auth.exchangeCodeForSession(formData.get("code") as string);
+
+  if (exchangeCodeError) redirect("/error");
+
+  const { error: updateUserError } = await supabase.auth.updateUser({
+    password: formData.get("password") as string
+  });
+
+  if (updateUserError) redirect("/error");
+
+  revalidatePath("/login", "layout");
+  redirect("/login");
+}
